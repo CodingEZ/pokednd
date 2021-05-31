@@ -48,6 +48,23 @@ def critical_modifier(attacker, defender):
         return 2.0
     return 1.0
 
+def stat_modifier(stat, character):
+    if stat == StatEnum.CONSTITUTION:
+        raise Exception()
+    elif stat == StatEnum.STRENGTH:
+        modifier = character.strength_modifier
+    elif stat == StatEnum.INTELLIGENCE:
+        modifier = character.intelligence_modifier
+    elif stat == StatEnum.DEFENSE:
+        modifier = character.defense_modifier
+    elif stat == StatEnum.DEXTERITY:
+        modifier = character.dexterity_modifier
+    elif stat == StatEnum.LUCK:
+        modifier = character.luck_modifier
+    else:
+        raise Exception()
+    return (2 + max(0, modifier)) / (2 - min(0, modifier))
+
 
 class Character:
     BASE_HP = 20
@@ -169,23 +186,6 @@ Luck: {self.luck}"""
             0, 0, 0, 0, 0, # modifiers
             StatusEnum.NONE, 0) # status
 
-    def stat_modifier(self, stat):
-        if stat == StatEnum.CONSTITUTION:
-            raise Exception()
-        elif stat == StatEnum.STRENGTH:
-            modifier = self.strength_modifier
-        elif stat == StatEnum.INTELLIGENCE:
-            modifier = self.intelligence_modifier
-        elif stat == StatEnum.DEFENSE:
-            modifier = self.defense_modifier
-        elif stat == StatEnum.DEXTERITY:
-            modifier = self.dexterity_modifier
-        elif stat == StatEnum.LUCK:
-            modifier = self.luck_modifier
-        else:
-            raise Exception()
-        return (2 + max(0, modifier)) / (2 - min(0, modifier))
-
     def attack(self, opponent, attack_type, move_type, roll_fraction, status_type):
         # Accuracy check
         if attack_type == AttackEnum.SELF_HP \
@@ -198,7 +198,7 @@ Luck: {self.luck}"""
             or attack_type == AttackEnum.TARGET_STATUS \
             or attack_type == AttackEnum.TARGET_MODIFICATION:
             v1, v2 = roll(ACTIONS[ActionEnum.ACCURACY], self, opponent)
-            v2 = v2 * self.stat_modifier(StatEnum.LUCK)
+            v2 = v2 * stat_modifier(StatEnum.LUCK, self)
             if (v1 > v2):
                 print(self.name + "'s attack missed!")
                 return
@@ -217,8 +217,8 @@ Luck: {self.luck}"""
                 attack_modifier = StatEnum.INTELLIGENCE
 
             damage = max(0, self.level / 2 + attack_stat - opponent.defense)
-            damage = damage * self.stat_modifier(attack_modifier)
-            damage = damage / opponent.stat_modifier(StatEnum.DEFENSE)
+            damage = damage * stat_modifier(attack_modifier, self)
+            damage = damage / stat_modifier(StatEnum.DEFENSE, opponent)
             
             damage = damage * effectiveness_modifier(move_type, opponent.type)
             damage = damage * roll_fraction
@@ -236,6 +236,7 @@ Luck: {self.luck}"""
             damage = 0
         elif attack_type == AttackEnum.TARGET_HP:
             damage = 40
+            print(f"{self.name}'s attack does {damage} damage to {opponent.name}")
         else:
             raise Exception()
 
