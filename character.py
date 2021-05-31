@@ -253,13 +253,21 @@ Luck: {self.luck}"""
         if attack_type == AttackEnum.PHYSICAL \
             or attack_type == AttackEnum.SPECIAL:
                 if status_type == StatusEnum.SLEEP:
-                    roll(ACTIONS[ActionEnum.SLEEP_PROC], self, opponent)
+                    v1, v2 = roll(ACTIONS[ActionEnum.SLEEP_PROC], self, opponent)
+                    if (v1 < v2):
+                        print("Target is now asleep!")
                 elif status_type == StatusEnum.PARALYZE:
-                    roll(ACTIONS[ActionEnum.PARALYZE_PROC], self, opponent)
+                    v1, v2 = roll(ACTIONS[ActionEnum.PARALYZE_PROC], self, opponent)
+                    if (v1 < v2):
+                        print("Target is now paralyzed!")
                 elif status_type == StatusEnum.BURN:
-                    roll(ACTIONS[ActionEnum.BURN_PROC], self, opponent)
+                    v1, v2 = roll(ACTIONS[ActionEnum.BURN_PROC], self, opponent)
+                    if (v1 < v2):
+                        print("Target is now burned!")
                 elif status_type == StatusEnum.CONFUSION:
-                    roll(ACTIONS[ActionEnum.CONFUSION_PROC], self, opponent)
+                    v1, v2 = roll(ACTIONS[ActionEnum.CONFUSION_PROC], self, opponent)
+                    if (v1 < v2):
+                        print("Target is now confused!")
                 elif status_type == StatusEnum.FLINCH \
                     or status_type == StatusEnum.NONE:
                     pass
