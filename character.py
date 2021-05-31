@@ -106,6 +106,8 @@ class Character:
         self.status = status
         self.damage_taken = damage_taken
 
+        self.is_burned = False
+
     def __str__(self):
         return f"""Constitution: {self.constitution}
 Strength: {self.strength}
@@ -231,6 +233,9 @@ Luck: {self.luck}"""
             damage = damage * critical_modifier(self, opponent)
             damage = damage * stab_modifier(move_type, self.types)
             damage = math.floor(damage)
+            
+            if self.is_burned:
+                damage = max(2, damage//2)
 
             print(f"{self.name}'s attack does {damage} damage to {opponent.name}")
         elif attack_type == AttackEnum.SELF_MODIFICATION \
