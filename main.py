@@ -2,137 +2,13 @@ import math
 import random
 from enum import Enum
 
+from action_enum import ActionEnum, ACTIONS
+from attack_enum import AttackEnum
+from move_enum import MoveEnum, SUPER_EFFECTIVE, NOT_VERY_EFFECTIVE
+from status_enum import StatusEnum
+from stat_enum import StatEnum
+from data import POKEDATA
 
-class AttackEnum(Enum):
-    PHYSICAL = 0
-    SPECIAL = 1
-    SELF_MODIFICATION = 2
-    TARGET_MODIFICATION = 3
-    SELF_HP = 4
-    SELF_STATUS = 5
-    TARGET_HP = 6
-    TARGET_STATUS = 7
-
-class MoveEnum(Enum):
-    NORMAL = 0
-    FIRE = 1
-    WATER = 2
-    GRASS = 3
-    PSYCHIC = 4
-    DARK = 5
-    FIGHTING = 6
-    DRAGON = 7
-    FAIRY = 8
-    STEEL = 9
-    FLYING = 10
-    GROUND = 11
-    ELECTRIC = 12
-
-SUPER_EFFECTIVE = {
-    MoveEnum.NORMAL: [],
-    MoveEnum.GRASS: [MoveEnum.WATER],
-    MoveEnum.FIRE: [MoveEnum.GRASS],
-    MoveEnum.WATER: [MoveEnum.FIRE],
-    MoveEnum.FIGHTING: [MoveEnum.DARK],
-    MoveEnum.PSYCHIC: [MoveEnum.FIGHTING],
-    MoveEnum.DARK: [MoveEnum.PSYCHIC],
-    MoveEnum.STEEL: [MoveEnum.FAIRY],
-    MoveEnum.DRAGON: [MoveEnum.DRAGON, MoveEnum.STEEL],
-    MoveEnum.FAIRY: [MoveEnum.DRAGON],
-    MoveEnum.GROUND: [MoveEnum.ELECTRIC],
-    MoveEnum.ELECTRIC: [MoveEnum.FLYING],
-    MoveEnum.FLYING: [MoveEnum.GROUND],
-}
-
-NOT_VERY_EFFECTIVE = {
-    MoveEnum.NORMAL: [],
-    MoveEnum.GRASS: [MoveEnum.GRASS, MoveEnum.FIRE],
-    MoveEnum.FIRE: [MoveEnum.FIRE, MoveEnum.WATER],
-    MoveEnum.WATER: [MoveEnum.WATER, MoveEnum.GRASS],
-    MoveEnum.FIGHTING: [MoveEnum.FIGHTING, MoveEnum.FIGHTING],
-    MoveEnum.PSYCHIC: [MoveEnum.PSYCHIC, MoveEnum.PSYCHIC],
-    MoveEnum.DARK: [MoveEnum.DARK, MoveEnum.DARK],
-    MoveEnum.STEEL: [MoveEnum.DRAGON],
-    MoveEnum.DRAGON: [MoveEnum.FAIRY],
-    MoveEnum.FAIRY: [MoveEnum.STEEL],
-    MoveEnum.GROUND: [MoveEnum.GROUND, MoveEnum.FLYING],
-    MoveEnum.ELECTRIC: [MoveEnum.ELECTRIC, MoveEnum.GROUND],
-    MoveEnum.FLYING: [MoveEnum.FLYING, MoveEnum.ELECTRIC],
-}
-
-class StatusEnum(Enum):
-    SLEEP = 0
-    PARALYZE = 1
-    BURN = 2
-    CONFUSION = 3
-    FLINCH = 4
-    NONE = 5
-
-class StatEnum(Enum):
-    CONSTITUTION = 0
-    STRENGTH = 1
-    INTELLIGENCE = 2
-    DEFENSE = 3
-    DEXTERITY = 4
-    CHARISMA = 5
-    WISDOM = 6
-    WILLPOWER = 7
-    PERCEPTION = 8
-    LUCK = 9
-
-class RollData:
-    def __init__(self, base, stat):
-        self.base = base
-        self.stat = stat
-
-class ActionEnum(Enum):
-    CRITICAL = 0
-    HEAL_STATUS = 1
-    HEAL_HP = 2
-    MODIFIER = 3
-    SCOUT = 4
-    ESCAPE = 5
-
-    ONLY_SLEEP_PROC = 6
-    ONLY_BURN_PROC = 7
-    ONLY_PARALYZE_PROC = 8
-    ONLY_CONFUSION_PROC = 9
-
-    SLEEP_PROC = 10
-    SLEEP = 11
-    BURN_PROC = 12
-    PARALYZE_PROC = 13
-    PARALYZE = 14
-    FLINCH = 15
-    CONFUSION_PROC = 16
-    CONFUSION_SNAP = 17
-    CONFUSION = 18
-    ACCURACY = 19
-
-ACTIONS = {
-    ActionEnum.CRITICAL: RollData(0.05, StatEnum.LUCK),
-    ActionEnum.HEAL_STATUS: RollData(0.3, StatEnum.WILLPOWER),
-    ActionEnum.HEAL_HP: RollData(0.3, StatEnum.WISDOM),
-    ActionEnum.MODIFIER: RollData(0.15, StatEnum.PERCEPTION),
-    ActionEnum.SCOUT: RollData(0.8, StatEnum.CHARISMA),
-    ActionEnum.ESCAPE: RollData(0.15, StatEnum.DEXTERITY),
-
-    ActionEnum.ONLY_SLEEP_PROC: RollData(0.5, StatEnum.WILLPOWER),
-    ActionEnum.ONLY_BURN_PROC: RollData(0.5, StatEnum.WISDOM),
-    ActionEnum.ONLY_PARALYZE_PROC: RollData(0.5, StatEnum.WISDOM),
-    ActionEnum.ONLY_CONFUSION_PROC: RollData(0.5, StatEnum.PERCEPTION),
-
-    ActionEnum.SLEEP_PROC: RollData(0.1, StatEnum.WILLPOWER),
-    ActionEnum.SLEEP: RollData(0.3, StatEnum.WILLPOWER),
-    ActionEnum.BURN_PROC: RollData(0.1, StatEnum.WISDOM),
-    ActionEnum.PARALYZE_PROC: RollData(0.1, StatEnum.WISDOM),
-    ActionEnum.PARALYZE: RollData(0.25, StatEnum.WISDOM),
-    ActionEnum.FLINCH: RollData(0.3, StatEnum.CHARISMA),
-    ActionEnum.CONFUSION_PROC: RollData(0.3, StatEnum.PERCEPTION),
-    ActionEnum.CONFUSION_SNAP: RollData(0.3, StatEnum.PERCEPTION),
-    ActionEnum.CONFUSION: RollData(0.2, StatEnum.PERCEPTION),
-    ActionEnum.ACCURACY: RollData(0.9, StatEnum.LUCK),
-}
 
 def roll(rd, c1, c2):
     if rd.stat == StatEnum.LUCK:
@@ -153,134 +29,6 @@ def roll(rd, c1, c2):
     else:
         raise Exception()
     return random.random(), rd.base * (v1 / v2) ** 1.25
-
-POKEDATA = dict()
-with open('pokemon.csv', 'r') as file:
-    lines = file.readlines()
-    flag = True
-    for line in lines:
-        if flag:
-            flag = False
-            continue
-        attack,base_egg_steps,base_happiness,base_total,capture_rate, \
-        classfication,defense,experience_growth,height_m,hp, \
-        name,percentage_male,pokedex_number,sp_attack,sp_defense, \
-        speed, type1,type2,weight_kg,generation,is_legendary = line.strip().split(',')
-
-        POKEDATA[name] = {
-            'hp': int(hp),
-            'attack': int(attack),
-            'defense': int(defense),
-            'sp_attack': int(sp_attack),
-            'sp_defense': int(sp_defense),
-            'speed': int(speed),
-            'friendship': int(base_happiness),
-            'weight': float(weight_kg),
-            'types': []
-        }
-
-        for v in [type1, type2]:
-            if v == "normal":
-                POKEDATA[name]['types'].append(MoveEnum.NORMAL)
-            elif v == "fire":
-                POKEDATA[name]['types'].append(MoveEnum.FIRE)
-            elif v == "water":
-                POKEDATA[name]['types'].append(MoveEnum.WATER)
-            elif v == "grass":
-                POKEDATA[name]['types'].append(MoveEnum.GRASS)
-            elif v == "psychic":
-                POKEDATA[name]['types'].append(MoveEnum.PSYCHIC)
-            elif v == "dark":
-                POKEDATA[name]['types'].append(MoveEnum.DARK)
-            elif v == "fighting":
-                POKEDATA[name]['types'].append(MoveEnum.FIGHTING)
-            elif v == "dragon":
-                POKEDATA[name]['types'].append(MoveEnum.DRAGON)
-            elif v == "fairy":
-                POKEDATA[name]['types'].append(MoveEnum.FAIRY)
-            elif v == "steel":
-                POKEDATA[name]['types'].append(MoveEnum.STEEL)
-            elif v == "flying":
-                POKEDATA[name]['types'].append(MoveEnum.FLYING)
-            elif v == "ground":
-                POKEDATA[name]['types'].append(MoveEnum.GROUND)
-            elif v == "electric":
-                POKEDATA[name]['types'].append(MoveEnum.ELECTRIC)
-
-        if len(POKEDATA[name]['types']) == 0:
-            POKEDATA[name]['types'].append(MoveEnum.NORMAL)
-
-def create_character(poke, stage, level):
-    if MoveEnum.DRAGON in poke['types'] \
-        or MoveEnum.ELECTRIC in poke['types'] \
-        or MoveEnum.FIRE in poke['types']:
-        wisdom = 100
-    else:
-        wisdom = 10
-
-    if MoveEnum.GROUND in poke['types'] \
-        or MoveEnum.STEEL in poke['types'] \
-        or MoveEnum.GRASS in poke['types']:
-        willpower = 100
-    else:
-        willpower = 10
-
-    if MoveEnum.FLYING in poke['types'] \
-        or MoveEnum.DARK in poke['types']:
-        charisma = 100
-    else:
-        charisma = 10
-
-    if MoveEnum.WATER in poke['types'] \
-        or MoveEnum.PSYCHIC in  poke['types']:
-        perception = 100
-    else:
-        perception = 10
-
-    if MoveEnum.FIGHTING in poke['types'] \
-        or MoveEnum.FAIRY in poke['types']:
-        luck = 100
-    else:
-        luck = 10
-
-    total = poke['hp'] + poke['attack'] + poke['defense'] + poke['sp_attack'] + poke['sp_defense'] + poke['speed'] \
-        + charisma + wisdom + willpower + perception + luck
-    stat_scale = 1000 * 0.8 / total
-
-    level_scale = level / 100
-
-    if stage == 1:
-        stage_scale = 0.3
-    elif stage == 2:
-        stage_scale = 0.55
-    elif stage == 3:
-        stage_scale = 0.8
-    elif stage == 4:
-        stage_scale = 1.0
-    else:
-        raise Exception()
-
-    constitution = math.floor(poke['hp'] * stat_scale * level_scale * stage_scale)
-    strength = math.floor(poke['attack'] * stat_scale * level_scale * stage_scale)
-    intelligence = math.floor(poke['sp_attack'] * stat_scale * level_scale * stage_scale)
-    defense = math.floor((poke['defense'] + poke['sp_defense']) / 2 * stat_scale * level_scale * stage_scale)
-    dexterity = math.floor(poke['speed'] * stat_scale * level_scale * stage_scale)
-
-    # allocate some mental stats forom concrete and typing
-    # charisma = math.floor(poke['friendship'] * stat_scale * level_scale * stage_scale)
-    # wisdom = math.floor(poke['weight'] * stat_scale * level_scale * stage_scale)
-    charisma = math.floor(charisma * stat_scale * level_scale * stage_scale)
-    wisdom = math.floor(wisdom * stat_scale * level_scale * stage_scale)
-    willpower = math.floor(willpower * stat_scale * level_scale * stage_scale)
-    perception = math.floor(perception * stat_scale * level_scale * stage_scale)
-    luck = math.floor(luck * stat_scale * level_scale * stage_scale)
-
-    return Character(
-        "random", level, poke['types'][0], 
-        constitution, strength, intelligence, defense, dexterity, # concrete
-        charisma, wisdom, willpower, perception, luck, # mental
-        0, 0, 0, 0, 0, # modifiers
-        StatusEnum.NONE, 0) # status
 
 class Character:
     BASE_HP = 20
@@ -328,6 +76,79 @@ Wisdom: {self.wisdom}
 Willpower: {self.willpower}
 Perception: {self.perception}
 Luck: {self.luck}"""
+
+    @staticmethod
+    def create(pokedata, stage, level):
+        if MoveEnum.DRAGON in pokedata['types'] \
+            or MoveEnum.ELECTRIC in pokedata['types'] \
+            or MoveEnum.FIRE in pokedata['types']:
+            wisdom = 100
+        else:
+            wisdom = 10
+
+        if MoveEnum.GROUND in pokedata['types'] \
+            or MoveEnum.STEEL in pokedata['types'] \
+            or MoveEnum.GRASS in pokedata['types']:
+            willpower = 100
+        else:
+            willpower = 10
+
+        if MoveEnum.FLYING in pokedata['types'] \
+            or MoveEnum.DARK in pokedata['types']:
+            charisma = 100
+        else:
+            charisma = 10
+
+        if MoveEnum.WATER in pokedata['types'] \
+            or MoveEnum.PSYCHIC in  pokedata['types']:
+            perception = 100
+        else:
+            perception = 10
+
+        if MoveEnum.FIGHTING in pokedata['types'] \
+            or MoveEnum.FAIRY in pokedata['types']:
+            luck = 100
+        else:
+            luck = 10
+
+        total = pokedata['hp'] + pokedata['attack'] + pokedata['defense'] + pokedata['sp_attack'] + pokedata['sp_defense'] + pokedata['speed'] \
+            + charisma + wisdom + willpower + perception + luck
+        stat_scale = 1000 * 0.8 / total
+
+        level_scale = level / 100
+
+        if stage == 1:
+            stage_scale = 0.3
+        elif stage == 2:
+            stage_scale = 0.55
+        elif stage == 3:
+            stage_scale = 0.8
+        elif stage == 4:
+            stage_scale = 1.0
+        else:
+            raise Exception()
+
+        constitution = math.floor(pokedata['hp'] * stat_scale * level_scale * stage_scale)
+        strength = math.floor(pokedata['attack'] * stat_scale * level_scale * stage_scale)
+        intelligence = math.floor(pokedata['sp_attack'] * stat_scale * level_scale * stage_scale)
+        defense = math.floor((pokedata['defense'] + pokedata['sp_defense']) / 2 * stat_scale * level_scale * stage_scale)
+        dexterity = math.floor(pokedata['speed'] * stat_scale * level_scale * stage_scale)
+
+        # allocate some mental stats forom concrete and typing
+        # charisma = math.floor(pokedata['friendship'] * stat_scale * level_scale * stage_scale)
+        # wisdom = math.floor(pokedata['weight'] * stat_scale * level_scale * stage_scale)
+        charisma = math.floor(charisma * stat_scale * level_scale * stage_scale)
+        wisdom = math.floor(wisdom * stat_scale * level_scale * stage_scale)
+        willpower = math.floor(willpower * stat_scale * level_scale * stage_scale)
+        perception = math.floor(perception * stat_scale * level_scale * stage_scale)
+        luck = math.floor(luck * stat_scale * level_scale * stage_scale)
+
+        return Character(
+            "random", level, pokedata['types'][0], 
+            constitution, strength, intelligence, defense, dexterity, # concrete
+            charisma, wisdom, willpower, perception, luck, # mental
+            0, 0, 0, 0, 0, # modifiers
+            StatusEnum.NONE, 0) # status
 
     def stab_modifier(self, attack_type):
         if self.type == attack_type:
@@ -610,8 +431,8 @@ c4 = Character(
     0, 0, 0, 0, 0, # modifiers
     StatusEnum.NONE, 0) # status
 
-print(create_character(POKEDATA["Bulbasaur"], 1, 10))
-print(create_character(POKEDATA["Charizard"], 3, 70))
+print(Character.create(POKEDATA["Bulbasaur"], 1, 10))
+print(Character.create(POKEDATA["Charizard"], 3, 70))
 
 # c1.attack(c2, AttackEnum.SPECIAL, MoveEnum.FIRE, .5, StatusEnum.BURN)
 # c2.attack(c1, AttackEnum.PHYSICAL, MoveEnum.NORMAL, .5, StatusEnum.NONE)
@@ -619,4 +440,4 @@ print(create_character(POKEDATA["Charizard"], 3, 70))
 # c1.attack(c2, AttackEnum.SPECIAL, MoveEnum.FIGHTING, 0, StatusEnum.NONE);
 # c3.attack(c1, AttackEnum.SPECIAL, MoveEnum.WATER, .80, StatusEnum.NONE);
 
-# turn_simulate(c1, c2)
+turn_simulate(c1, c2)
