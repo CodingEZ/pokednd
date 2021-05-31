@@ -25,15 +25,54 @@ def roll_power():
     return res
 
 
+choice_decision = [
+    ('Decision', '', None),
+    ('1', 'scout', None),
+    ('2', 'heal hp', None),
+    ('3', 'heal modifier', None),
+    ('4', 'heal status', None),
+    ('5', 'attack', None),
+    ('What is your decision?', '', None),
+]
+
+choice_attack_type = [
+    ('Attack type', '', None),
+    ('1', 'physical', AttackEnum.PHYSICAL),
+    ('2', 'special', AttackEnum.SPECIAL),
+    ('3', 'target_hp', AttackEnum.TARGET_HP),
+    ('4', 'target_modification', AttackEnum.TARGET_MODIFICATION),
+    ('5', 'target_status', AttackEnum.TARGET_STATUS),
+    ('Choose an attack type', '', None),
+]
+
+choice_status_type = [
+    ('Status type', '', None),
+    ('1', 'sleep', StatusEnum.SLEEP),
+    ('2', 'paralyze', StatusEnum.PARALYZE),
+    ('3', 'burn', StatusEnum.BURN),
+    ('4', 'confusion', StatusEnum.CONFUSION),
+    ('5', 'flinch', StatusEnum.FLINCH),
+    ('6', 'none', StatusEnum.NONE),
+    ('Choose an status type', '', None),
+]
+
+def input_text(lst):
+    s = []
+    for e in lst:
+        s.append(f"{e[0]}: {e[1]}")
+    return '\n'.join(s)
+
+def make_choice(lst, choice):
+    for e in lst:
+        if e[2] is None:
+            continue
+        if e[0] == choice:
+            return e[2]
+    return None
+
 def turn_simulate(c1, c2):
     while True:
-        decision = input("""Decision:
-1: scout
-2: heal hp
-3: heal modifier
-4: heal status
-5: attack
-What is your decision?: """)
+        decision = input(input_text(choice_decision))
         if decision == "1":
             c1.scout(c2)
             return
@@ -52,27 +91,9 @@ What is your decision?: """)
             break
 
     while True:
-        attack_type = input("""Attack type:
-1: physical
-2: special
-3: target_modification
-4: target_hp
-5: target_status
-Choose an attack type: """)
-        if attack_type == "1":
-            attack_type = AttackEnum.PHYSICAL
-            break
-        elif attack_type == "2":
-            attack_type = AttackEnum.SPECIAL
-            break
-        elif attack_type == "3":
-            attack_type = AttackEnum.TARGET_MODIFICATION
-            break
-        elif attack_type == "4":
-            attack_type = AttackEnum.TARGET_HP
-            break
-        elif attack_type == "5":
-            attack_type = AttackEnum.TARGET_STATUS
+        attack_type = input(input_text(choice_attack_type))
+        attack_type = make_choice(choice_attack_type, attack_type)
+        if attack_type is not None:
             break
     print()
 
@@ -87,31 +108,9 @@ Choose an attack type: """)
         move_type = MoveEnum.NORMAL
 
     while True:
-        status_type = input("""Status type:
-1: sleep
-2: paralyze
-3: burn
-4: confusion
-5: flinch
-6: none
-Choose an status type: """)
-        if status_type == "1":
-            status_type = StatusEnum.SLEEP
-            break
-        elif status_type == "2":
-            status_type = StatusEnum.PARALYZE
-            break
-        elif status_type == "3":
-            status_type = StatusEnum.BURN
-            break
-        elif status_type == "4":
-            status_type = StatusEnum.CONFUSION
-            break
-        elif status_type == "5":
-            status_type = StatusEnum.FLINCH
-            break
-        elif status_type == "6":
-            status_type = StatusEnum.NONE
+        status_type = input(input_text(choice_status_type))
+        status_type = make_choice(choice_status_type, status_type)
+        if status_type is not None:
             break
     print()
 
