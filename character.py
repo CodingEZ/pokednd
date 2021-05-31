@@ -281,6 +281,7 @@ Luck: {self.luck}"""
             elif status_type == StatusEnum.BURN:
                 v1, v2 = roll(ACTIONS[ActionEnum.BURN_PROC], self, opponent)
                 if (v1 < v2):
+                    opponent.is_burned = True
                     print("Target is now burned!")
             elif status_type == StatusEnum.CONFUSION:
                 v1, v2 = roll(
