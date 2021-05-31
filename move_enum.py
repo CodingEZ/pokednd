@@ -82,3 +82,43 @@ IMMUNITY = {
     MoveEnum.DARK: [],
     MoveEnum.FAIRY: [],
 }
+
+
+def match_move_type(move_type):
+    if move_type == "normal":
+        return MoveEnum.NORMAL
+    elif move_type == "fighting":
+        return MoveEnum.FIGHTING
+    elif move_type == "flying":
+        return MoveEnum.FLYING
+    elif move_type == "poison":
+        return MoveEnum.POISON
+    elif move_type == "ground":
+        return MoveEnum.GROUND
+    elif move_type == "rock":
+        return MoveEnum.ROCK
+    elif move_type == "bug":
+        return MoveEnum.BUG
+    elif move_type == "ghost":
+        return MoveEnum.GHOST
+    elif move_type == "steel":
+        return MoveEnum.STEEL
+    elif move_type == "fire":
+        return MoveEnum.FIRE
+    elif move_type == "water":
+        return MoveEnum.WATER
+    elif move_type == "grass":
+        return MoveEnum.GRASS
+    elif move_type == "electric":
+        return MoveEnum.ELECTRIC
+    elif move_type == "psychic":
+        return MoveEnum.PSYCHIC
+    elif move_type == "ice":
+        return MoveEnum.ICE
+    elif move_type == "dragon":
+        return MoveEnum.DRAGON
+    elif move_type == "dark":
+        return MoveEnum.DARK
+    elif move_type == "fairy":
+        return MoveEnum.FAIRY
+    return None
