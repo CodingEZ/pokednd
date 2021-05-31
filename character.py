@@ -27,8 +27,8 @@ def roll(rd, c1, c2):
         raise Exception()
     return random.random(), rd.base * (v1 / v2) ** 1.25
 
-def stab_modifier(move_type, self_type):
-    if self_type == move_type:
+def stab_modifier(move_type, self_types):
+    if move_type in self_types:
         return 1.5
     return 1.0
 
@@ -229,7 +229,7 @@ Luck: {self.luck}"""
             damage = damage * roll_fraction
             damage = max(2, math.floor(damage))
             damage = damage * critical_modifier(self, opponent)
-            damage = damage * stab_modifier(move_type, self.type)
+            damage = damage * stab_modifier(move_type, self.types)
             damage = math.floor(damage)
 
             print(f"{self.name}'s attack does {damage} damage to {opponent.name}")
