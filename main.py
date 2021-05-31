@@ -125,39 +125,26 @@ def turn_simulate(c1, c2):
     c1.attack(c2, attack_type, move_type, roll_fraction, status_type)
 
 
+# c2 = Character.create("EZ", POKEDATA["Treecko"], 1, 10)
+c3 = Character.create("???", POKEDATA["Metapod"], 1, 10,
+    0, 0, 1, 0, 0,  # modifiers
+    False, False, False, True)  # status
+# c3 = Character.create("Octillery", POKEDATA["Octillery"], 2, 20)
+
 c1 = Character(
     "Techno", 10, [MoveEnum.FIRE],
     2, 1, 3, 1, 3,  # concrete
     1, 1, 2, 1, 2,  # mental
-    -2, 0, 0, 0, 0,  # modifiers
-    True, True, True, True)  # status
+    0, 0, 0, 0, 0,  # modifiers
+    True, False, False, False)  # status
 c2 = Character(
-    "Squirrel", 8, [MoveEnum.NORMAL],
-    2, 2, 2, 4, 2,  # concrete
-    1, 1, 1, 1, 1,  # mental
-    2, 0, 0, 2, 1,  # modifiers
-    True, True, True, True)  # status
-c3 = Character(
-    "Octopus", 8, [MoveEnum.WATER],
-    0, 0, 17, 0, 0,  # concrete
-    0, 0, 0, 0, 0,  # mental
+    "EZ", 10, [MoveEnum.GRASS],
+    2, 2, 3, 2, 3,  # concrete
+    0, 0, 5, 0, 0,  # mental
     0, 0, 0, 0, 0,  # modifiers
-    True, True, True, True)  # status
-c4 = Character(
-    "Raccoon", 25, [MoveEnum.GRASS],
-    0, 0, 0, 0, 0,  # concrete
-    0, 0, 0, 0, 0,  # mental
-    0, 0, 0, 0, 0,  # modifiers
-    True, True, True, True)  # status
+    False, True, False, False)  # status
 
-c5 = Character.create(POKEDATA["Charmander"], 1, 10)
+# c5 = Character.create(POKEDATA["Treecko"], 1, 10)
 # print(c5)
-# print(Character.create(POKEDATA["Charizard"], 3, 70))
 
-# c1.attack(c2, AttackEnum.SPECIAL, MoveEnum.FIRE, .5, StatusEnum.BURN)
-# c2.attack(c1, AttackEnum.PHYSICAL, MoveEnum.NORMAL, .5, StatusEnum.NONE)
-
-# c1.attack(c2, AttackEnum.SPECIAL, MoveEnum.FIGHTING, 0, StatusEnum.NONE);
-# c3.attack(c1, AttackEnum.SPECIAL, MoveEnum.WATER, .80, StatusEnum.NONE);
-
-turn_simulate(c1, c2)
+turn_simulate(c1, c3)

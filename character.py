@@ -139,7 +139,9 @@ Perception: {self.perception}
 Luck: {self.luck}"""
 
     @staticmethod
-    def create(pokedata, stage, level):
+    def create(name, pokedata, stage, level,
+               strength_modifier, intelligence_modifier, defense_modifier, dexterity_modifer, luck_modifier,
+               is_asleep, is_confused, is_paralyzed, is_burned):
         if inter([MoveEnum.DRAGON, MoveEnum.ELECTRIC, MoveEnum.FIRE], pokedata['types']):
             wisdom = 100
         else:
@@ -206,18 +208,19 @@ Luck: {self.luck}"""
         luck = math.floor(luck * stat_scale * level_scale * stage_scale)
 
         return Character(
-            "random", level, pokedata['types'],
+            name, level, pokedata['types'],
             constitution, strength, intelligence, defense, dexterity,  # concrete
             charisma, wisdom, willpower, perception, luck,  # mental
-            0, 0, 0, 0, 0,  # modifiers
-            False, False, False, False)  # status
+            strength_modifier, intelligence_modifier, defense_modifier, dexterity_modifer, luck_modifier,  # modifiers
+            is_asleep, is_confused, is_paralyzed, is_burned)  # status
 
     def attack(self, opponent, attack_type, move_type, roll_fraction, status_type):
-        if self.is_asleep and roll_comp(ACTIONS[ActionEnum.SLEEP], self, opponent):
-            print(f"{self.name} stays asleep")
-            return
-        else:
-            print(f"{self.name} wakes up!")
+        if self.is_asleep:
+            if roll_comp(ACTIONS[ActionEnum.SLEEP], self, opponent):
+                print(f"{self.name} stays asleep")
+                return
+            else:
+                print(f"{self.name} wakes up!")
 
         if self.is_paralyzed and roll_comp(ACTIONS[ActionEnum.PARALYZE], self, opponent):
             print(f"{self.name} is paralyzed")
