@@ -265,7 +265,7 @@ Luck: {self.luck}"""
         elif attack_type == AttackEnum.TARGET_MODIFICATION:
             pass
         elif attack_type == AttackEnum.SELF_HP:
-            v1, v2 = roll(Actions.HEAL_HP, self, opponent)
+            v1, v2 = roll(ACTIONS[ActionEnum.HEAL_HP], self, opponent)
             if (v1 > v2):
                 print(self.name + " failed to heal!")
                 return
@@ -276,7 +276,7 @@ Luck: {self.luck}"""
         elif attack_type == AttackEnum.SELF_STATUS:
             pass
         elif attack_type == AttackEnum.TARGET_STATUS:
-            v1, v2 = roll(Actions.ONLY_BURN_PROC, self, character)
+            v1, v2 = roll(ACTIONS[ActionEnum.ONLY_BURN_PROC], self, opponent)
             if (v1 > v2):
                 print(f"{self.name} failed to burn the target!")
                 return
