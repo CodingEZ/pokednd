@@ -173,7 +173,7 @@ c4 = Character(
     0, 0, 0, 0, 0, # modifiers
     StatusEnum.NONE, 0) # status
 
-c5 = Character.create(POKEDATA["Charmander"], 1, 10)
+# c5 = Character.create(POKEDATA["Charmander"], 1, 10)
 # print(c5)
 # print(Character.create(POKEDATA["Charizard"], 3, 70))
 
