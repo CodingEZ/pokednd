@@ -65,8 +65,7 @@ def effectiveness_modifier(move_type, defender):
 
 
 def critical_modifier(attacker, defender):
-    v1, v2 = roll(ACTIONS[ActionEnum.CRITICAL], attacker, defender)
-    if (v1 < v2):
+    if roll_comp(ACTIONS[ActionEnum.CRITICAL], attacker, defender):
         print("DAS A CRIT!!!")
         return 2.0
     return 1.0
@@ -287,25 +286,21 @@ Luck: {self.luck}"""
         if attack_type == AttackEnum.PHYSICAL \
                 or attack_type == AttackEnum.SPECIAL:
             if status_type == StatusEnum.SLEEP:
-                v1, v2 = roll(ACTIONS[ActionEnum.SLEEP_PROC], self, opponent)
-                if (v1 < v2):
+                if roll_comp(ACTIONS[ActionEnum.SLEEP_PROC], self, opponent):
                     print("Target is now asleep!")
             elif status_type == StatusEnum.PARALYZE:
-                v1, v2 = roll(
-                    ACTIONS[ActionEnum.PARALYZE_PROC], self, opponent)
-                if (v1 < v2):
+                if roll_comp(ACTIONS[ActionEnum.PARALYZE_PROC], self, opponent):
                     print("Target is now paralyzed!")
             elif status_type == StatusEnum.BURN:
-                v1, v2 = roll(ACTIONS[ActionEnum.BURN_PROC], self, opponent)
-                if (v1 < v2):
+                if roll_comp(ACTIONS[ActionEnum.BURN_PROC], self, opponent):
                     print("Target is now burned!")
             elif status_type == StatusEnum.CONFUSION:
-                v1, v2 = roll(
-                    ACTIONS[ActionEnum.CONFUSION_PROC], self, opponent)
-                if (v1 < v2):
+                if roll_comp(ACTIONS[ActionEnum.CONFUSION_PROC], self, opponent):
                     print("Target is now confused!")
-            elif status_type == StatusEnum.FLINCH \
-                    or status_type == StatusEnum.NONE:
+            elif status_type == StatusEnum.FLINCH:
+                if roll_comp(ACTIONS[ActionEnum.FLINCH], self, opponent):
+                    print("Target flinched!")
+            elif status_type == StatusEnum.NONE:
                 pass
             else:
                 raise Exception()
@@ -314,51 +309,40 @@ Luck: {self.luck}"""
         elif attack_type == AttackEnum.TARGET_HP:
             pass
         elif attack_type == AttackEnum.TARGET_STATUS:
-            v1, v2 = roll(ACTIONS[ActionEnum.ONLY_BURN_PROC], self, opponent)
-            if (v1 > v2):
+            if roll_comp(ACTIONS[ActionEnum.ONLY_BURN_PROC], self, opponent):
+                print(f"{self.name} burned the target!")
+            else:
                 print(f"{self.name} failed to burn the target!")
                 return
-            else:
-                print(f"{self.name} burned the target!")
         else:
             raise Exception()
 
     def heal_hp(self, opponent, roll_fraction):
-        v1, v2 = roll(ACTIONS[ActionEnum.HEAL_HP], self, opponent)
-        if (v1 > v2):
-            print(f"{self.name} fails to heal!")
-            return
-        else:
+        if roll_comp(ACTIONS[ActionEnum.HEAL_HP], self, opponent):
             print(f"{self.name} heals {roll_fraction * 100} percent of HP.")
+        else:
+            print(f"{self.name} fails to heal!")
 
     def heal_modifier(self, opponent):
-        v1, v2 = roll(ACTIONS[ActionEnum.HEAL_MODIFIER], self, opponent)
-        if (v1 > v2):
-            print(f"{self.name} fails to heal!")
-            return
-        else:
+        if roll_comp(ACTIONS[ActionEnum.HEAL_MODIFIER], self, opponent):
             print(f"{self.name} heals a modifier.")
+        else:
+            print(f"{self.name} fails to heal!")
 
     def heal_status(self, opponent):
-        v1, v2 = roll(ACTIONS[ActionEnum.HEAL_STATUS], self, opponent)
-        if (v1 > v2):
-            print(f"{self.name} fails to heal!")
-            return
-        else:
+        if roll_comp(ACTIONS[ActionEnum.HEAL_STATUS], self, opponent):
             print(f"{self.name} heals a status condition.")
+        else:
+            print(f"{self.name} fails to heal!")
 
     def scout(self, opponent):
-        v1, v2 = roll(ACTIONS[ActionEnum.SCOUT], self, opponent)
-        if (v1 > v2):
-            print(f"{self.name} fails to scout!")
-            return
-        else:
+        if roll_comp(ACTIONS[ActionEnum.SCOUT], self, opponent):
             print(f"{self.name} scouts successfully.")
+        else:
+            print(f"{self.name} fails to scout!")
 
     def escape(self, opponent):
-        v1, v2 = roll(ACTIONS[ActionEnum.ESCAPE], self, opponent)
-        if (v1 > v2):
-            print(f"{self.name} fails to escape.")
-            return
-        else:
+        if roll_comp(ACTIONS[ActionEnum.ESCAPE], self, opponent):
             print(f"{self.name} escapes successfully.")
+        else:
+            print(f"{self.name} fails to escape.")
