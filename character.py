@@ -250,8 +250,7 @@ Luck: {self.luck}"""
 
         # Damage calc
         damage = 0
-        if attack_type == AttackEnum.PHYSICAL \
-                or attack_type == AttackEnum.SPECIAL:
+        if attack_type == AttackEnum.PHYSICAL or attack_type == AttackEnum.SPECIAL:
             if attack_type == AttackEnum.PHYSICAL:
                 attack_stat = self.strength
                 attack_modifier = StatEnum.STRENGTH
@@ -283,8 +282,7 @@ Luck: {self.luck}"""
         else:
             raise Exception()
 
-        if attack_type == AttackEnum.PHYSICAL \
-                or attack_type == AttackEnum.SPECIAL:
+        if attack_type == AttackEnum.PHYSICAL or attack_type == AttackEnum.SPECIAL:
             if status_type == StatusEnum.SLEEP:
                 if roll_comp(ACTIONS[ActionEnum.SLEEP_PROC], self, opponent):
                     print("Target is now asleep!")
@@ -309,11 +307,35 @@ Luck: {self.luck}"""
         elif attack_type == AttackEnum.TARGET_HP:
             pass
         elif attack_type == AttackEnum.TARGET_STATUS:
-            if roll_comp(ACTIONS[ActionEnum.ONLY_BURN_PROC], self, opponent):
-                print(f"{self.name} burned the target!")
+            if status_type == StatusEnum.SLEEP:
+                if roll_comp(ACTIONS[ActionEnum.ONLY_SLEEP_PROC], self, opponent):
+                    print("Target is now asleep!")
+                else:
+                    print("Target sleep fail!")
+            elif status_type == StatusEnum.PARALYZE:
+                if roll_comp(ACTIONS[ActionEnum.ONLY_PARALYZE_PROC], self, opponent):
+                    print("Target is now paralyzed!")
+                else:
+                    print("Target paralyze fail!")
+            elif status_type == StatusEnum.BURN:
+                if roll_comp(ACTIONS[ActionEnum.ONLY_BURN_PROC], self, opponent):
+                    print("Target is now burned!")
+                else:
+                    print("Target burn fail!")
+            elif status_type == StatusEnum.CONFUSION:
+                if roll_comp(ACTIONS[ActionEnum.ONLY_CONFUSION_PROC], self, opponent):
+                    print("Target is now confused!")
+                else:
+                    print("Target confusion fail!")
+            elif status_type == StatusEnum.FLINCH:
+                if roll_comp(ACTIONS[ActionEnum.ONLY_FLINCH], self, opponent):
+                    print("Target flinched!")
+                else:
+                    print("Target flinch fail!")
+            elif status_type == StatusEnum.NONE:
+                pass
             else:
-                print(f"{self.name} failed to burn the target!")
-                return
+                raise Exception()
         else:
             raise Exception()
 
