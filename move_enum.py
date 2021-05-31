@@ -2,47 +2,81 @@ from enum import Enum
 
 class MoveEnum(Enum):
     NORMAL = 0
-    FIRE = 1
-    WATER = 2
-    GRASS = 3
-    PSYCHIC = 4
-    DARK = 5
-    FIGHTING = 6
-    DRAGON = 7
-    FAIRY = 8
-    STEEL = 9
-    FLYING = 10
-    GROUND = 11
+    FIGHTING = 1
+    FLYING = 2
+    POISON = 3
+    GROUND = 4
+    ROCK = 5
+    BUG = 6
+    GHOST = 7
+    STEEL = 8
+    FIRE = 9
+    WATER = 10
+    GRASS = 11
     ELECTRIC = 12
+    PSYCHIC = 13
+    ICE = 14
+    DRAGON = 15
+    DARK = 16
+    FAIRY = 17
 
 SUPER_EFFECTIVE = {
     MoveEnum.NORMAL: [],
-    MoveEnum.GRASS: [MoveEnum.WATER],
-    MoveEnum.FIRE: [MoveEnum.GRASS],
-    MoveEnum.WATER: [MoveEnum.FIRE],
-    MoveEnum.FIGHTING: [MoveEnum.DARK],
-    MoveEnum.PSYCHIC: [MoveEnum.FIGHTING],
-    MoveEnum.DARK: [MoveEnum.PSYCHIC],
-    MoveEnum.STEEL: [MoveEnum.FAIRY],
-    MoveEnum.DRAGON: [MoveEnum.DRAGON, MoveEnum.STEEL],
-    MoveEnum.FAIRY: [MoveEnum.DRAGON],
-    MoveEnum.GROUND: [MoveEnum.ELECTRIC],
-    MoveEnum.ELECTRIC: [MoveEnum.FLYING],
-    MoveEnum.FLYING: [MoveEnum.GROUND],
+    MoveEnum.FIGHTING: [MoveEnum.NORMAL, MoveEnum.ROCK, MoveEnum.STEEL, MoveEnum.ICE, MoveEnum.DARK],
+    MoveEnum.FLYING: [MoveEnum.FIGHTING, MoveEnum.BUG, MoveEnum.GRASS],
+    MoveEnum.POISON: [MoveEnum.GRASS, MoveEnum.FAIRY],
+    MoveEnum.GROUND: [MoveEnum.POISON, MoveEnum.ROCK, MoveEnum.STEEL, MoveEnum.FIRE, MoveEnum.ELECTRIC],
+    MoveEnum.ROCK: [MoveEnum.FLYING, MoveEnum.BUG, MoveEnum.FIRE, MoveEnum.ICE],
+    MoveEnum.BUG: [MoveEnum.GRASS, MoveEnum.PSYCHIC, MoveEnum.DARK],
+    MoveEnum.GHOST: [MoveEnum.GHOST, MoveEnum.PSYCHIC],
+    MoveEnum.STEEL: [MoveEnum.ROCK, MoveEnum.ICE, MoveEnum.FAIRY],
+    MoveEnum.FIRE: [MoveEnum.BUG, MoveEnum.STEEL, MoveEnum.GRASS, MoveEnum.ICE],
+    MoveEnum.WATER: [MoveEnum.GROUND, MoveEnum.ROCK, MoveEnum.FIRE],
+    MoveEnum.GRASS: [MoveEnum.GROUND, MoveEnum.ROCK, MoveEnum.WATER],
+    MoveEnum.ELECTRIC: [MoveEnum.FLYING, MoveEnum.WATER],
+    MoveEnum.PSYCHIC: [MoveEnum.FIGHTING, MoveEnum.POISON],
+    MoveEnum.ICE: [MoveEnum.FLYING, MoveEnum.GROUND, MoveEnum.GRASS, MoveEnum.DRAGON],
+    MoveEnum.DRAGON: [MoveEnum.DRAGON],
+    MoveEnum.DARK: [MoveEnum.GHOST, MoveEnum.PSYCHIC],
+    MoveEnum.FAIRY: [MoveEnum.FIGHTING, MoveEnum.DRAGON, MoveEnum.DARK],
 }
 
 NOT_VERY_EFFECTIVE = {
-    MoveEnum.NORMAL: [],
-    MoveEnum.GRASS: [MoveEnum.GRASS, MoveEnum.FIRE],
-    MoveEnum.FIRE: [MoveEnum.FIRE, MoveEnum.WATER],
-    MoveEnum.WATER: [MoveEnum.WATER, MoveEnum.GRASS],
-    MoveEnum.FIGHTING: [MoveEnum.FIGHTING, MoveEnum.FIGHTING],
-    MoveEnum.PSYCHIC: [MoveEnum.PSYCHIC, MoveEnum.PSYCHIC],
-    MoveEnum.DARK: [MoveEnum.DARK, MoveEnum.DARK],
-    MoveEnum.STEEL: [MoveEnum.DRAGON],
+    MoveEnum.NORMAL: [MoveEnum.ROCK, MoveEnum.STEEL],
+    MoveEnum.FIGHTING: [MoveEnum.FLYING, MoveEnum.POISON, MoveEnum.BUG, MoveEnum.PSYCHIC, MoveEnum.FAIRY],
+    MoveEnum.FLYING: [MoveEnum.ROCK, MoveEnum.STEEL, MoveEnum.ELECTRIC],
+    MoveEnum.POISON: [MoveEnum.POISON, MoveEnum.GROUND, MoveEnum.ROCK],
+    MoveEnum.GROUND: [MoveEnum.BUG, MoveEnum.GRASS],
+    MoveEnum.ROCK: [MoveEnum.FIGHTING, MoveEnum.STEEL],
+    MoveEnum.BUG: [MoveEnum.FIGHTING, MoveEnum.FLYING, MoveEnum.POISON, MoveEnum.GHOST, MoveEnum.STEEL, MoveEnum.FIRE, MoveEnum.FAIRY],
+    MoveEnum.GHOST: [MoveEnum.DARK],
+    MoveEnum.STEEL: [MoveEnum.STEEL, MoveEnum.FIRE, MoveEnum.WATER, MoveEnum.ELECTRIC],
+    MoveEnum.FIRE: [MoveEnum.ROCK, MoveEnum.FIRE, MoveEnum.WATER, MoveEnum.DRAGON],
+    MoveEnum.WATER: [MoveEnum.WATER, MoveEnum.GRASS, MoveEnum.DRAGON],
+    MoveEnum.GRASS: [MoveEnum.FLYING, MoveEnum.POISON, MoveEnum.BUG, MoveEnum.STEEL, MoveEnum.FIRE, MoveEnum.GRASS, MoveEnum.DRAGON],
+    MoveEnum.ELECTRIC: [MoveEnum.GRASS, MoveEnum.ELECTRIC, MoveEnum.DRAGON],
+    MoveEnum.PSYCHIC: [MoveEnum.STEEL, MoveEnum.PSYCHIC],
+    MoveEnum.DRAGON: [MoveEnum.STEEL],
+    MoveEnum.DARK: [MoveEnum.DARK, MoveEnum.FAIRY],
+    MoveEnum.FAIRY: [MoveEnum.POISON, MoveEnum.STEEL, MoveEnum.FIRE],
+}
+
+IMMUNITY = {
+    MoveEnum.NORMAL: [MoveEnum.GHOST],
+    MoveEnum.FIGHTING: [MoveEnum.GHOST],
+    MoveEnum.FLYING: [],
+    MoveEnum.POISON: [MoveEnum.STEEL],
+    MoveEnum.GROUND: [MoveEnum.FLYING],
+    MoveEnum.ROCK: [],
+    MoveEnum.BUG: [],
+    MoveEnum.GHOST: [MoveEnum.NORMAL],
+    MoveEnum.STEEL: [],
+    MoveEnum.FIRE: [],
+    MoveEnum.WATER: [],
+    MoveEnum.GRASS: [],
+    MoveEnum.ELECTRIC: [MoveEnum.GROUND],
+    MoveEnum.PSYCHIC: [MoveEnum.DARK],
     MoveEnum.DRAGON: [MoveEnum.FAIRY],
-    MoveEnum.FAIRY: [MoveEnum.STEEL],
-    MoveEnum.GROUND: [MoveEnum.GROUND, MoveEnum.FLYING],
-    MoveEnum.ELECTRIC: [MoveEnum.ELECTRIC, MoveEnum.GROUND],
-    MoveEnum.FLYING: [MoveEnum.FLYING, MoveEnum.ELECTRIC],
+    MoveEnum.DARK: [],
+    MoveEnum.FAIRY: [],
 }

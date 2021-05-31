@@ -2,7 +2,7 @@ import math
 import random
 from action_enum import ActionEnum, ACTIONS
 from attack_enum import AttackEnum
-from move_enum import MoveEnum, SUPER_EFFECTIVE, NOT_VERY_EFFECTIVE
+from move_enum import MoveEnum, SUPER_EFFECTIVE, NOT_VERY_EFFECTIVE, IMMUNITY
 from status_enum import StatusEnum
 from stat_enum import StatEnum
 
@@ -32,14 +32,19 @@ def stab_modifier(move_type, self_type):
         return 1.5
     return 1.0
 
-def effectiveness_modifier(move_type, opp_type):
-    if opp_type in SUPER_EFFECTIVE[move_type]:
-        print("Super effective!")
-        return 1.25
-    elif move_type in SUPER_EFFECTIVE[opp_type]:
-        print("Not very effective")
-        return 0.5
-    return 1.0
+def effectiveness_modifier(move_type, defender):
+    m = 1.0
+    for t in defender.types:
+        if t in SUPER_EFFECTIVE[move_type]:
+            print("Super effective!")
+            m *= 1.25
+        elif t in NOT_VERY_EFFECTIVE[move_type]:
+            print("Not very effective")
+            m *= 0.5
+        elif t in IMMUNITY[move_type]:
+            print("Immunity")
+            m *= 0.25
+    return m
 
 def critical_modifier(attacker, defender):
     v1, v2 = roll(ACTIONS[ActionEnum.CRITICAL], attacker, defender)
@@ -70,14 +75,14 @@ class Character:
     BASE_HP = 20
     BASE_OTHER = 5
 
-    def __init__(self, name, level, type, constitution, strength,
+    def __init__(self, name, level, types, constitution, strength,
         intelligence, defense, dexterity, charisma, wisdom,
         willpower, perception, luck, strength_modifier,
         intelligence_modifier, defense_modifier, dexterity_modifer,
         luck_modifier, status, damage_taken):
         self.name = name
         self.level = level
-        self.type = type
+        self.types = types
 
         self.constitution = constitution * 10 + __class__.BASE_HP
         self.strength = strength + __class__.BASE_OTHER
@@ -180,7 +185,7 @@ Luck: {self.luck}"""
         luck = math.floor(luck * stat_scale * level_scale * stage_scale)
 
         return Character(
-            "random", level, pokedata['types'][0], 
+            "random", level, pokedata['types'], 
             constitution, strength, intelligence, defense, dexterity, # concrete
             charisma, wisdom, willpower, perception, luck, # mental
             0, 0, 0, 0, 0, # modifiers
@@ -220,7 +225,7 @@ Luck: {self.luck}"""
             damage = damage * stat_modifier(attack_modifier, self)
             damage = damage / stat_modifier(StatEnum.DEFENSE, opponent)
             
-            damage = damage * effectiveness_modifier(move_type, opponent.type)
+            damage = damage * effectiveness_modifier(move_type, opponent)
             damage = damage * roll_fraction
             damage = max(2, math.floor(damage))
             damage = damage * critical_modifier(self, opponent)
@@ -243,13 +248,13 @@ Luck: {self.luck}"""
         if attack_type == AttackEnum.PHYSICAL \
             or attack_type == AttackEnum.SPECIAL:
                 if status_type == StatusEnum.SLEEP:
-                    roll(ACTIONS[ActionEnum.SLEEP_PROC], self, character)
+                    roll(ACTIONS[ActionEnum.SLEEP_PROC], self, opponent)
                 elif status_type == StatusEnum.PARALYZE:
-                    roll(ACTIONS[ActionEnum.PARALYZE_PROC], self, character)
+                    roll(ACTIONS[ActionEnum.PARALYZE_PROC], self, opponent)
                 elif status_type == StatusEnum.BURN:
-                    roll(ACTIONS[ActionEnum.BURN_PROC], self, character)
+                    roll(ACTIONS[ActionEnum.BURN_PROC], self, opponent)
                 elif status_type == StatusEnum.CONFUSION:
-                    roll(ACTIONS[ActionEnum.CONFUSION_PROC], self, character)
+                    roll(ACTIONS[ActionEnum.CONFUSION_PROC], self, opponent)
                 elif status_type == StatusEnum.FLINCH \
                     or status_type == StatusEnum.NONE:
                     pass
@@ -260,7 +265,7 @@ Luck: {self.luck}"""
         elif attack_type == AttackEnum.TARGET_MODIFICATION:
             pass
         elif attack_type == AttackEnum.SELF_HP:
-            v1, v2 = roll(Actions.HEAL_HP, self, character)
+            v1, v2 = roll(Actions.HEAL_HP, self, opponent)
             if (v1 > v2):
                 print(self.name + " failed to heal!")
                 return
