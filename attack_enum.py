@@ -1,5 +1,6 @@
 from enum import Enum
 
+
 class AttackEnum(Enum):
     PHYSICAL = 0
     SPECIAL = 1

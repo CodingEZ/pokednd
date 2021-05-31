@@ -1,5 +1,6 @@
 from enum import Enum
 
+
 class StatusEnum(Enum):
     SLEEP = 0
     PARALYZE = 1

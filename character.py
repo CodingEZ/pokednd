@@ -27,10 +27,12 @@ def roll(rd, c1, c2):
         raise Exception()
     return random.random(), rd.base * (v1 / v2) ** 1.25
 
+
 def stab_modifier(move_type, self_types):
     if move_type in self_types:
         return 1.5
     return 1.0
+
 
 def effectiveness_modifier(move_type, defender):
     m = 1.0
@@ -46,12 +48,14 @@ def effectiveness_modifier(move_type, defender):
             m *= 0.25
     return m
 
+
 def critical_modifier(attacker, defender):
     v1, v2 = roll(ACTIONS[ActionEnum.CRITICAL], attacker, defender)
     if (v1 < v2):
         print("DAS A CRIT!!!")
         return 2.0
     return 1.0
+
 
 def stat_modifier(stat, character):
     if stat == StatEnum.CONSTITUTION:
@@ -76,10 +80,10 @@ class Character:
     BASE_OTHER = 5
 
     def __init__(self, name, level, types, constitution, strength,
-        intelligence, defense, dexterity, charisma, wisdom,
-        willpower, perception, luck, strength_modifier,
-        intelligence_modifier, defense_modifier, dexterity_modifer,
-        luck_modifier, status, damage_taken):
+                 intelligence, defense, dexterity, charisma, wisdom,
+                 willpower, perception, luck, strength_modifier,
+                 intelligence_modifier, defense_modifier, dexterity_modifer,
+                 luck_modifier, status, damage_taken):
         self.name = name
         self.level = level
         self.types = types
@@ -123,38 +127,38 @@ Luck: {self.luck}"""
     @staticmethod
     def create(pokedata, stage, level):
         if MoveEnum.DRAGON in pokedata['types'] \
-            or MoveEnum.ELECTRIC in pokedata['types'] \
-            or MoveEnum.FIRE in pokedata['types']:
+                or MoveEnum.ELECTRIC in pokedata['types'] \
+                or MoveEnum.FIRE in pokedata['types']:
             wisdom = 100
         else:
             wisdom = 10
 
         if MoveEnum.GROUND in pokedata['types'] \
-            or MoveEnum.STEEL in pokedata['types'] \
-            or MoveEnum.GRASS in pokedata['types'] \
-            or MoveEnum.POISON in pokedata['types']:
+                or MoveEnum.STEEL in pokedata['types'] \
+                or MoveEnum.GRASS in pokedata['types'] \
+                or MoveEnum.POISON in pokedata['types']:
             willpower = 100
         else:
             willpower = 10
 
         if MoveEnum.FIGHTING in pokedata['types'] \
-            or MoveEnum.ROCK in pokedata['types'] \
-            or MoveEnum.FAIRY in pokedata['types']:
+                or MoveEnum.ROCK in pokedata['types'] \
+                or MoveEnum.FAIRY in pokedata['types']:
             charisma = 100
         else:
             charisma = 10
 
         if MoveEnum.ICE in pokedata['types'] \
-            or MoveEnum.FLYING in pokedata['types'] \
-            or MoveEnum.PSYCHIC in pokedata['types'] \
-            or MoveEnum.BUG in pokedata['types']:
+                or MoveEnum.FLYING in pokedata['types'] \
+                or MoveEnum.PSYCHIC in pokedata['types'] \
+                or MoveEnum.BUG in pokedata['types']:
             perception = 100
         else:
             perception = 10
 
         if MoveEnum.FIGHTING in pokedata['types'] \
-            or MoveEnum.DARK in pokedata['types'] \
-            or MoveEnum.GHOST in pokedata['types']:
+                or MoveEnum.DARK in pokedata['types'] \
+                or MoveEnum.GHOST in pokedata['types']:
             luck = 100
         else:
             luck = 10
@@ -176,39 +180,47 @@ Luck: {self.luck}"""
         else:
             raise Exception()
 
-        constitution = math.floor(pokedata['hp'] * stat_scale * level_scale * stage_scale)
-        strength = math.floor(pokedata['attack'] * stat_scale * level_scale * stage_scale)
-        intelligence = math.floor(pokedata['sp_attack'] * stat_scale * level_scale * stage_scale)
-        defense = math.floor((pokedata['defense'] + pokedata['sp_defense']) / 2 * stat_scale * level_scale * stage_scale)
-        dexterity = math.floor(pokedata['speed'] * stat_scale * level_scale * stage_scale)
+        constitution = math.floor(
+            pokedata['hp'] * stat_scale * level_scale * stage_scale)
+        strength = math.floor(
+            pokedata['attack'] * stat_scale * level_scale * stage_scale)
+        intelligence = math.floor(
+            pokedata['sp_attack'] * stat_scale * level_scale * stage_scale)
+        defense = math.floor(
+            (pokedata['defense'] + pokedata['sp_defense']) / 2 * stat_scale * level_scale * stage_scale)
+        dexterity = math.floor(
+            pokedata['speed'] * stat_scale * level_scale * stage_scale)
 
         # allocate some mental stats forom concrete and typing
         # charisma = math.floor(pokedata['friendship'] * stat_scale * level_scale * stage_scale)
         # wisdom = math.floor(pokedata['weight'] * stat_scale * level_scale * stage_scale)
-        charisma = math.floor(charisma * stat_scale * level_scale * stage_scale)
+        charisma = math.floor(charisma * stat_scale *
+                              level_scale * stage_scale)
         wisdom = math.floor(wisdom * stat_scale * level_scale * stage_scale)
-        willpower = math.floor(willpower * stat_scale * level_scale * stage_scale)
-        perception = math.floor(perception * stat_scale * level_scale * stage_scale)
+        willpower = math.floor(willpower * stat_scale *
+                               level_scale * stage_scale)
+        perception = math.floor(
+            perception * stat_scale * level_scale * stage_scale)
         luck = math.floor(luck * stat_scale * level_scale * stage_scale)
 
         return Character(
-            "random", level, pokedata['types'], 
-            constitution, strength, intelligence, defense, dexterity, # concrete
-            charisma, wisdom, willpower, perception, luck, # mental
-            0, 0, 0, 0, 0, # modifiers
-            StatusEnum.NONE, 0) # status
+            "random", level, pokedata['types'],
+            constitution, strength, intelligence, defense, dexterity,  # concrete
+            charisma, wisdom, willpower, perception, luck,  # mental
+            0, 0, 0, 0, 0,  # modifiers
+            StatusEnum.NONE, 0)  # status
 
     def attack(self, opponent, attack_type, move_type, roll_fraction, status_type):
         # Accuracy check
         if attack_type == AttackEnum.SELF_HP \
-            or attack_type == AttackEnum.SELF_MODIFICATION \
-            or attack_type == AttackEnum.SELF_STATUS:
+                or attack_type == AttackEnum.SELF_MODIFICATION \
+                or attack_type == AttackEnum.SELF_STATUS:
             pass
         elif attack_type == AttackEnum.PHYSICAL \
-            or attack_type == AttackEnum.SPECIAL \
-            or attack_type == AttackEnum.TARGET_HP \
-            or attack_type == AttackEnum.TARGET_STATUS \
-            or attack_type == AttackEnum.TARGET_MODIFICATION:
+                or attack_type == AttackEnum.SPECIAL \
+                or attack_type == AttackEnum.TARGET_HP \
+                or attack_type == AttackEnum.TARGET_STATUS \
+                or attack_type == AttackEnum.TARGET_MODIFICATION:
             v1, v2 = roll(ACTIONS[ActionEnum.ACCURACY], self, opponent)
             v2 = v2 * stat_modifier(StatEnum.LUCK, self)
             if (v1 > v2):
@@ -220,7 +232,7 @@ Luck: {self.luck}"""
         # Damage calc
         damage = 0
         if attack_type == AttackEnum.PHYSICAL \
-            or attack_type == AttackEnum.SPECIAL:
+                or attack_type == AttackEnum.SPECIAL:
             if attack_type == AttackEnum.PHYSICAL:
                 attack_stat = self.strength
                 attack_modifier = StatEnum.STRENGTH
@@ -231,23 +243,23 @@ Luck: {self.luck}"""
             damage = max(0, self.level / 2 + attack_stat - opponent.defense)
             damage = damage * stat_modifier(attack_modifier, self)
             damage = damage / stat_modifier(StatEnum.DEFENSE, opponent)
-            
+
             damage = damage * effectiveness_modifier(move_type, opponent)
             damage = damage * roll_fraction
             damage = max(2, math.floor(damage))
             damage = damage * critical_modifier(self, opponent)
             damage = damage * stab_modifier(move_type, self.types)
             damage = math.floor(damage)
-            
+
             if self.is_burned:
                 damage = max(2, damage//2)
 
             print(f"{self.name}'s attack does {damage} damage to {opponent.name}")
         elif attack_type == AttackEnum.SELF_MODIFICATION \
-            or attack_type == AttackEnum.TARGET_MODIFICATION \
-            or attack_type == AttackEnum.SELF_HP \
-            or attack_type == AttackEnum.SELF_STATUS \
-            or attack_type == AttackEnum.TARGET_STATUS:
+                or attack_type == AttackEnum.TARGET_MODIFICATION \
+                or attack_type == AttackEnum.SELF_HP \
+                or attack_type == AttackEnum.SELF_STATUS \
+                or attack_type == AttackEnum.TARGET_STATUS:
             damage = 0
         elif attack_type == AttackEnum.TARGET_HP:
             damage = 40
@@ -256,28 +268,30 @@ Luck: {self.luck}"""
             raise Exception()
 
         if attack_type == AttackEnum.PHYSICAL \
-            or attack_type == AttackEnum.SPECIAL:
-                if status_type == StatusEnum.SLEEP:
-                    v1, v2 = roll(ACTIONS[ActionEnum.SLEEP_PROC], self, opponent)
-                    if (v1 < v2):
-                        print("Target is now asleep!")
-                elif status_type == StatusEnum.PARALYZE:
-                    v1, v2 = roll(ACTIONS[ActionEnum.PARALYZE_PROC], self, opponent)
-                    if (v1 < v2):
-                        print("Target is now paralyzed!")
-                elif status_type == StatusEnum.BURN:
-                    v1, v2 = roll(ACTIONS[ActionEnum.BURN_PROC], self, opponent)
-                    if (v1 < v2):
-                        print("Target is now burned!")
-                elif status_type == StatusEnum.CONFUSION:
-                    v1, v2 = roll(ACTIONS[ActionEnum.CONFUSION_PROC], self, opponent)
-                    if (v1 < v2):
-                        print("Target is now confused!")
-                elif status_type == StatusEnum.FLINCH \
+                or attack_type == AttackEnum.SPECIAL:
+            if status_type == StatusEnum.SLEEP:
+                v1, v2 = roll(ACTIONS[ActionEnum.SLEEP_PROC], self, opponent)
+                if (v1 < v2):
+                    print("Target is now asleep!")
+            elif status_type == StatusEnum.PARALYZE:
+                v1, v2 = roll(
+                    ACTIONS[ActionEnum.PARALYZE_PROC], self, opponent)
+                if (v1 < v2):
+                    print("Target is now paralyzed!")
+            elif status_type == StatusEnum.BURN:
+                v1, v2 = roll(ACTIONS[ActionEnum.BURN_PROC], self, opponent)
+                if (v1 < v2):
+                    print("Target is now burned!")
+            elif status_type == StatusEnum.CONFUSION:
+                v1, v2 = roll(
+                    ACTIONS[ActionEnum.CONFUSION_PROC], self, opponent)
+                if (v1 < v2):
+                    print("Target is now confused!")
+            elif status_type == StatusEnum.FLINCH \
                     or status_type == StatusEnum.NONE:
-                    pass
-                else:
-                    raise Exception()
+                pass
+            else:
+                raise Exception()
         elif attack_type == AttackEnum.SELF_MODIFICATION:
             pass
         elif attack_type == AttackEnum.TARGET_MODIFICATION:

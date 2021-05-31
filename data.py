@@ -8,10 +8,10 @@ with open('pokemon.csv', 'r') as file:
         if flag:
             flag = False
             continue
-        attack,base_egg_steps,base_happiness,base_total,capture_rate, \
-        classfication,defense,experience_growth,height_m,hp, \
-        name,percentage_male,pokedex_number,sp_attack,sp_defense, \
-        speed, type1,type2,weight_kg,generation,is_legendary = line.strip().split(',')
+        attack, base_egg_steps, base_happiness, base_total, capture_rate, \
+            classfication, defense, experience_growth, height_m, hp, \
+            name, percentage_male, pokedex_number, sp_attack, sp_defense, \
+            speed, type1, type2, weight_kg, generation, is_legendary = line.strip().split(',')
 
         POKEDATA[name] = {
             'hp': int(hp),

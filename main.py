@@ -14,12 +14,14 @@ from character import Character
 def roll_dice(num, sides):
     return [math.floor(random.random() * sides) + 1 for i in range(num)]
 
+
 def roll_power():
     results = roll_dice(5, 25)
     print(results)
     res = (sum(results) - min(results)) / 100
     print(f"Move power: {res}")
     return res
+
 
 def turn_simulate(c1, c2):
     while True:
@@ -148,30 +150,31 @@ Choose an status type: """)
 
     c1.attack(c2, attack_type, move_type, .5, status_type)
 
+
 c1 = Character(
-    "Techno", 10, [MoveEnum.FIRE], 
-    2, 1, 3, 1, 3, # concrete
-    1, 1, 2, 1, 2, # mental
-    -2, 0, 0, 0, 0, # modifiers
-    StatusEnum.NONE, 0) # status
+    "Techno", 10, [MoveEnum.FIRE],
+    2, 1, 3, 1, 3,  # concrete
+    1, 1, 2, 1, 2,  # mental
+    -2, 0, 0, 0, 0,  # modifiers
+    StatusEnum.NONE, 0)  # status
 c2 = Character(
-    "Squirrel", 8, [MoveEnum.NORMAL], 
-    2, 2, 2, 4, 2, # concrete
-    1, 1, 1, 1, 1, # mental
-    2, 0, 0, 2, 1, # modifiers
-    StatusEnum.NONE, 0) # status
+    "Squirrel", 8, [MoveEnum.NORMAL],
+    2, 2, 2, 4, 2,  # concrete
+    1, 1, 1, 1, 1,  # mental
+    2, 0, 0, 2, 1,  # modifiers
+    StatusEnum.NONE, 0)  # status
 c3 = Character(
-    "Octopus", 8, [MoveEnum.WATER], 
-    0, 0, 17, 0, 0, # concrete
-    0, 0, 0, 0, 0, # mental
-    0, 0, 0, 0, 0, # modifiers
-    StatusEnum.NONE, 0) # status
+    "Octopus", 8, [MoveEnum.WATER],
+    0, 0, 17, 0, 0,  # concrete
+    0, 0, 0, 0, 0,  # mental
+    0, 0, 0, 0, 0,  # modifiers
+    StatusEnum.NONE, 0)  # status
 c4 = Character(
-    "Raccoon", 25, [MoveEnum.GRASS], 
-    0, 0, 0, 0, 0, # concrete
-    0, 0, 0, 0, 0, # mental
-    0, 0, 0, 0, 0, # modifiers
-    StatusEnum.NONE, 0) # status
+    "Raccoon", 25, [MoveEnum.GRASS],
+    0, 0, 0, 0, 0,  # concrete
+    0, 0, 0, 0, 0,  # mental
+    0, 0, 0, 0, 0,  # modifiers
+    StatusEnum.NONE, 0)  # status
 
 # c5 = Character.create(POKEDATA["Charmander"], 1, 10)
 # print(c5)

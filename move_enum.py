@@ -1,5 +1,6 @@
 from enum import Enum
 
+
 class MoveEnum(Enum):
     NORMAL = 0
     FIGHTING = 1
@@ -19,6 +20,7 @@ class MoveEnum(Enum):
     DRAGON = 15
     DARK = 16
     FAIRY = 17
+
 
 SUPER_EFFECTIVE = {
     MoveEnum.NORMAL: [],

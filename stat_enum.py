@@ -1,5 +1,6 @@
 from enum import Enum
 
+
 class StatEnum(Enum):
     CONSTITUTION = 0
     STRENGTH = 1

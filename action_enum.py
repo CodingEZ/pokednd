@@ -1,10 +1,12 @@
 from enum import Enum
 from stat_enum import StatEnum
 
+
 class RollData:
     def __init__(self, base, stat):
         self.base = base
         self.stat = stat
+
 
 class ActionEnum(Enum):
     CRITICAL = 0
@@ -29,6 +31,7 @@ class ActionEnum(Enum):
     CONFUSION_SNAP = 17
     CONFUSION = 18
     ACCURACY = 19
+
 
 ACTIONS = {
     ActionEnum.CRITICAL: RollData(0.05, StatEnum.LUCK),
