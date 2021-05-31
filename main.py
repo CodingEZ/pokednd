@@ -56,11 +56,13 @@ choice_status_type = [
     ('Choose an status type', '', None),
 ]
 
+
 def input_text(lst):
     s = []
     for e in lst:
         s.append(f"{e[0]}: {e[1]}")
     return '\n'.join(s)
+
 
 def make_choice(lst, choice):
     for e in lst:
@@ -69,6 +71,7 @@ def make_choice(lst, choice):
         if e[0] == choice:
             return e[2]
     return None
+
 
 def turn_simulate(c1, c2):
     while True:
@@ -127,25 +130,25 @@ c1 = Character(
     2, 1, 3, 1, 3,  # concrete
     1, 1, 2, 1, 2,  # mental
     -2, 0, 0, 0, 0,  # modifiers
-    StatusEnum.NONE, 0)  # status
+    True, True, True, True)  # status
 c2 = Character(
     "Squirrel", 8, [MoveEnum.NORMAL],
     2, 2, 2, 4, 2,  # concrete
     1, 1, 1, 1, 1,  # mental
     2, 0, 0, 2, 1,  # modifiers
-    StatusEnum.NONE, 0)  # status
+    True, True, True, True)  # status
 c3 = Character(
     "Octopus", 8, [MoveEnum.WATER],
     0, 0, 17, 0, 0,  # concrete
     0, 0, 0, 0, 0,  # mental
     0, 0, 0, 0, 0,  # modifiers
-    StatusEnum.NONE, 0)  # status
+    True, True, True, True)  # status
 c4 = Character(
     "Raccoon", 25, [MoveEnum.GRASS],
     0, 0, 0, 0, 0,  # concrete
     0, 0, 0, 0, 0,  # mental
     0, 0, 0, 0, 0,  # modifiers
-    StatusEnum.NONE, 0)  # status
+    True, True, True, True)  # status
 
 c5 = Character.create(POKEDATA["Charmander"], 1, 10)
 # print(c5)

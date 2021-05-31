@@ -7,6 +7,13 @@ from status_enum import StatusEnum
 from stat_enum import StatEnum
 
 
+def inter(l1, l2):
+    for e in l1:
+        if e in l2:
+            return True
+    return False
+
+
 def roll(rd, c1, c2):
     if rd.stat == StatEnum.CHARISMA:
         v1 = c1.charisma
@@ -29,6 +36,11 @@ def roll(rd, c1, c2):
     else:
         raise Exception()
     return random.random(), rd.base * (v1 / v2) ** 1.25
+
+
+def roll_comp(rd, c1, c2):
+    v1, v2 = roll(rd, c1, c2)
+    return v1 < v2
 
 
 def stab_modifier(move_type, self_types):
@@ -86,7 +98,7 @@ class Character:
                  intelligence, defense, dexterity, charisma, wisdom,
                  willpower, perception, luck, strength_modifier,
                  intelligence_modifier, defense_modifier, dexterity_modifer,
-                 luck_modifier, status, damage_taken):
+                 luck_modifier, is_asleep, is_confused, is_paralyzed, is_burned):
         self.name = name
         self.level = level
         self.types = types
@@ -110,10 +122,10 @@ class Character:
 
         self.luck_modifier = luck_modifier
 
-        self.status = status
-        self.damage_taken = damage_taken
-
-        self.is_burned = False
+        self.is_asleep = is_asleep
+        self.is_confused = is_confused
+        self.is_paralyzed = is_paralyzed
+        self.is_burned = is_burned
 
     def __str__(self):
         return f"""Constitution: {self.constitution}
@@ -129,39 +141,27 @@ Luck: {self.luck}"""
 
     @staticmethod
     def create(pokedata, stage, level):
-        if MoveEnum.DRAGON in pokedata['types'] \
-                or MoveEnum.ELECTRIC in pokedata['types'] \
-                or MoveEnum.FIRE in pokedata['types']:
+        if inter([MoveEnum.DRAGON, MoveEnum.ELECTRIC, MoveEnum.FIRE], pokedata['types']):
             wisdom = 100
         else:
             wisdom = 10
 
-        if MoveEnum.GROUND in pokedata['types'] \
-                or MoveEnum.STEEL in pokedata['types'] \
-                or MoveEnum.GRASS in pokedata['types'] \
-                or MoveEnum.POISON in pokedata['types']:
+        if inter([MoveEnum.GROUND, MoveEnum.STEEL, MoveEnum.GRASS, MoveEnum.POISON], pokedata['types']):
             willpower = 100
         else:
             willpower = 10
 
-        if MoveEnum.FIGHTING in pokedata['types'] \
-                or MoveEnum.ROCK in pokedata['types'] \
-                or MoveEnum.FAIRY in pokedata['types']:
+        if inter([MoveEnum.FIGHTING, MoveEnum.ROCK, MoveEnum.FAIRY], pokedata['types']):
             charisma = 100
         else:
             charisma = 10
 
-        if MoveEnum.ICE in pokedata['types'] \
-                or MoveEnum.FLYING in pokedata['types'] \
-                or MoveEnum.PSYCHIC in pokedata['types'] \
-                or MoveEnum.BUG in pokedata['types']:
+        if inter([MoveEnum.ICE, MoveEnum.FLYING, MoveEnum.PSYCHIC, MoveEnum.BUG], pokedata['types']):
             perception = 100
         else:
             perception = 10
 
-        if MoveEnum.FIGHTING in pokedata['types'] \
-                or MoveEnum.DARK in pokedata['types'] \
-                or MoveEnum.GHOST in pokedata['types']:
+        if inter([MoveEnum.FIGHTING, MoveEnum.DARK, MoveEnum.GHOST], pokedata['types']):
             luck = 100
         else:
             luck = 10
@@ -211,9 +211,30 @@ Luck: {self.luck}"""
             constitution, strength, intelligence, defense, dexterity,  # concrete
             charisma, wisdom, willpower, perception, luck,  # mental
             0, 0, 0, 0, 0,  # modifiers
-            StatusEnum.NONE, 0)  # status
+            False, False, False, False)  # status
 
     def attack(self, opponent, attack_type, move_type, roll_fraction, status_type):
+        if self.is_asleep and roll_comp(ACTIONS[ActionEnum.SLEEP], self, opponent):
+            print(f"{self.name} stays asleep")
+            return
+        else:
+            print(f"{self.name} wakes up!")
+
+        if self.is_paralyzed and roll_comp(ACTIONS[ActionEnum.PARALYZE], self, opponent):
+            print(f"{self.name} is paralyzed")
+            return
+
+        if self.is_confused:
+            if roll_comp(ACTIONS[ActionEnum.CONFUSION_SNAP], self, opponent):
+                print(f"{self.name} snaps out of confusion")
+                self.is_confused = False
+            else:
+                print(f"{self.name} stays confused")
+
+        if self.is_confused and roll_comp(ACTIONS[ActionEnum.CONFUSION], self, opponent):
+            print(f"{self.name} hits itself in confusion")
+            opponent = self
+
         # Accuracy check
         if attack_type == AttackEnum.PHYSICAL \
                 or attack_type == AttackEnum.SPECIAL \
@@ -223,7 +244,7 @@ Luck: {self.luck}"""
             v1, v2 = roll(ACTIONS[ActionEnum.ACCURACY], self, opponent)
             v2 = v2 * stat_modifier(StatEnum.LUCK, self)
             if (v1 > v2):
-                print(self.name + "'s attack missed!")
+                print(f"{self.name}'s attack missed!")
                 return
         else:
             raise Exception()
