@@ -129,25 +129,30 @@ Luck: {self.luck}"""
 
         if MoveEnum.GROUND in pokedata['types'] \
             or MoveEnum.STEEL in pokedata['types'] \
-            or MoveEnum.GRASS in pokedata['types']:
+            or MoveEnum.GRASS in pokedata['types'] \
+            or MoveEnum.POISON in pokedata['types']:
             willpower = 100
         else:
             willpower = 10
 
-        if MoveEnum.FLYING in pokedata['types'] \
-            or MoveEnum.DARK in pokedata['types']:
+        if MoveEnum.FIGHTING in pokedata['types'] \
+            or MoveEnum.ROCK in pokedata['types'] \
+            or MoveEnum.FAIRY in pokedata['types']:
             charisma = 100
         else:
             charisma = 10
 
-        if MoveEnum.WATER in pokedata['types'] \
-            or MoveEnum.PSYCHIC in  pokedata['types']:
+        if MoveEnum.ICE in pokedata['types'] \
+            or MoveEnum.FLYING in pokedata['types'] \
+            or MoveEnum.PSYCHIC in pokedata['types'] \
+            or MoveEnum.BUG in pokedata['types']:
             perception = 100
         else:
             perception = 10
 
         if MoveEnum.FIGHTING in pokedata['types'] \
-            or MoveEnum.FAIRY in pokedata['types']:
+            or MoveEnum.DARK in pokedata['types'] \
+            or MoveEnum.GHOST in pokedata['types']:
             luck = 100
         else:
             luck = 10
