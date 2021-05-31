@@ -12,7 +12,7 @@ class ActionEnum(Enum):
     CRITICAL = 0
     HEAL_STATUS = 1
     HEAL_HP = 2
-    MODIFIER = 3
+    HEAL_MODIFIER = 3
     SCOUT = 4
     ESCAPE = 5
 
@@ -35,10 +35,10 @@ class ActionEnum(Enum):
 
 ACTIONS = {
     ActionEnum.CRITICAL: RollData(0.05, StatEnum.LUCK),
-    ActionEnum.HEAL_STATUS: RollData(0.3, StatEnum.WILLPOWER),
-    ActionEnum.HEAL_HP: RollData(0.3, StatEnum.WISDOM),
-    ActionEnum.MODIFIER: RollData(0.15, StatEnum.PERCEPTION),
-    ActionEnum.SCOUT: RollData(0.8, StatEnum.CHARISMA),
+    ActionEnum.HEAL_STATUS: RollData(0.4, StatEnum.WILLPOWER),
+    ActionEnum.HEAL_HP: RollData(0.4, StatEnum.WISDOM),
+    ActionEnum.HEAL_MODIFIER: RollData(0.4, StatEnum.PERCEPTION),
+    ActionEnum.SCOUT: RollData(0.7, StatEnum.CHARISMA),
     ActionEnum.ESCAPE: RollData(0.15, StatEnum.DEXTERITY),
 
     ActionEnum.ONLY_SLEEP_PROC: RollData(0.5, StatEnum.WILLPOWER),

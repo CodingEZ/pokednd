@@ -8,7 +8,10 @@ from stat_enum import StatEnum
 
 
 def roll(rd, c1, c2):
-    if rd.stat == StatEnum.LUCK:
+    if rd.stat == StatEnum.CHARISMA:
+        v1 = c1.charisma
+        v2 = c2.charisma
+    elif rd.stat == StatEnum.LUCK:
         v1 = c1.luck
         v2 = c2.luck
     elif rd.stat == StatEnum.WILLPOWER:
@@ -212,11 +215,7 @@ Luck: {self.luck}"""
 
     def attack(self, opponent, attack_type, move_type, roll_fraction, status_type):
         # Accuracy check
-        if attack_type == AttackEnum.SELF_HP \
-                or attack_type == AttackEnum.SELF_MODIFICATION \
-                or attack_type == AttackEnum.SELF_STATUS:
-            pass
-        elif attack_type == AttackEnum.PHYSICAL \
+        if attack_type == AttackEnum.PHYSICAL \
                 or attack_type == AttackEnum.SPECIAL \
                 or attack_type == AttackEnum.TARGET_HP \
                 or attack_type == AttackEnum.TARGET_STATUS \
@@ -255,10 +254,7 @@ Luck: {self.luck}"""
                 damage = max(2, damage//2)
 
             print(f"{self.name}'s attack does {damage} damage to {opponent.name}")
-        elif attack_type == AttackEnum.SELF_MODIFICATION \
-                or attack_type == AttackEnum.TARGET_MODIFICATION \
-                or attack_type == AttackEnum.SELF_HP \
-                or attack_type == AttackEnum.SELF_STATUS \
+        elif attack_type == AttackEnum.TARGET_MODIFICATION \
                 or attack_type == AttackEnum.TARGET_STATUS:
             damage = 0
         elif attack_type == AttackEnum.TARGET_HP:
@@ -292,20 +288,9 @@ Luck: {self.luck}"""
                 pass
             else:
                 raise Exception()
-        elif attack_type == AttackEnum.SELF_MODIFICATION:
-            pass
         elif attack_type == AttackEnum.TARGET_MODIFICATION:
             pass
-        elif attack_type == AttackEnum.SELF_HP:
-            v1, v2 = roll(ACTIONS[ActionEnum.HEAL_HP], self, opponent)
-            if (v1 > v2):
-                print(self.name + " failed to heal!")
-                return
-            else:
-                print(self.name + " healed 50% of HP.")
         elif attack_type == AttackEnum.TARGET_HP:
-            pass
-        elif attack_type == AttackEnum.SELF_STATUS:
             pass
         elif attack_type == AttackEnum.TARGET_STATUS:
             v1, v2 = roll(ACTIONS[ActionEnum.ONLY_BURN_PROC], self, opponent)
@@ -316,3 +301,43 @@ Luck: {self.luck}"""
                 print(f"{self.name} burned the target!")
         else:
             raise Exception()
+
+    def heal_hp(self, opponent, roll_fraction):
+        v1, v2 = roll(ACTIONS[ActionEnum.HEAL_HP], self, opponent)
+        if (v1 > v2):
+            print(f"{self.name} fails to heal!")
+            return
+        else:
+            print(f"{self.name} heals {roll_fraction * 100} percent of HP.")
+
+    def heal_modifier(self, opponent):
+        v1, v2 = roll(ACTIONS[ActionEnum.HEAL_MODIFIER], self, opponent)
+        if (v1 > v2):
+            print(f"{self.name} fails to heal!")
+            return
+        else:
+            print(f"{self.name} heals a modifier.")
+
+    def heal_status(self, opponent):
+        v1, v2 = roll(ACTIONS[ActionEnum.HEAL_STATUS], self, opponent)
+        if (v1 > v2):
+            print(f"{self.name} fails to heal!")
+            return
+        else:
+            print(f"{self.name} heals a status condition.")
+
+    def scout(self, opponent):
+        v1, v2 = roll(ACTIONS[ActionEnum.SCOUT], self, opponent)
+        if (v1 > v2):
+            print(f"{self.name} fails to scout!")
+            return
+        else:
+            print(f"{self.name} scouts successfully.")
+
+    def escape(self, opponent):
+        v1, v2 = roll(ACTIONS[ActionEnum.ESCAPE], self, opponent)
+        if (v1 > v2):
+            print(f"{self.name} fails to escape.")
+            return
+        else:
+            print(f"{self.name} escapes successfully.")
