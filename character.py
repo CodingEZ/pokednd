@@ -27,8 +27,8 @@ def roll(rd, c1, c2):
         raise Exception()
     return random.random(), rd.base * (v1 / v2) ** 1.25
 
-def stab_modifier(move_type, self_type):
-    if self_type == move_type:
+def stab_modifier(move_type, self_types):
+    if move_type in self_types:
         return 1.5
     return 1.0
 
@@ -106,6 +106,8 @@ class Character:
         self.status = status
         self.damage_taken = damage_taken
 
+        self.is_burned = False
+
     def __str__(self):
         return f"""Constitution: {self.constitution}
 Strength: {self.strength}
@@ -129,25 +131,30 @@ Luck: {self.luck}"""
 
         if MoveEnum.GROUND in pokedata['types'] \
             or MoveEnum.STEEL in pokedata['types'] \
-            or MoveEnum.GRASS in pokedata['types']:
+            or MoveEnum.GRASS in pokedata['types'] \
+            or MoveEnum.POISON in pokedata['types']:
             willpower = 100
         else:
             willpower = 10
 
-        if MoveEnum.FLYING in pokedata['types'] \
-            or MoveEnum.DARK in pokedata['types']:
+        if MoveEnum.FIGHTING in pokedata['types'] \
+            or MoveEnum.ROCK in pokedata['types'] \
+            or MoveEnum.FAIRY in pokedata['types']:
             charisma = 100
         else:
             charisma = 10
 
-        if MoveEnum.WATER in pokedata['types'] \
-            or MoveEnum.PSYCHIC in  pokedata['types']:
+        if MoveEnum.ICE in pokedata['types'] \
+            or MoveEnum.FLYING in pokedata['types'] \
+            or MoveEnum.PSYCHIC in pokedata['types'] \
+            or MoveEnum.BUG in pokedata['types']:
             perception = 100
         else:
             perception = 10
 
         if MoveEnum.FIGHTING in pokedata['types'] \
-            or MoveEnum.FAIRY in pokedata['types']:
+            or MoveEnum.DARK in pokedata['types'] \
+            or MoveEnum.GHOST in pokedata['types']:
             luck = 100
         else:
             luck = 10
@@ -229,8 +236,11 @@ Luck: {self.luck}"""
             damage = damage * roll_fraction
             damage = max(2, math.floor(damage))
             damage = damage * critical_modifier(self, opponent)
-            damage = damage * stab_modifier(move_type, self.type)
+            damage = damage * stab_modifier(move_type, self.types)
             damage = math.floor(damage)
+            
+            if self.is_burned:
+                damage = max(2, damage//2)
 
             print(f"{self.name}'s attack does {damage} damage to {opponent.name}")
         elif attack_type == AttackEnum.SELF_MODIFICATION \
@@ -248,13 +258,21 @@ Luck: {self.luck}"""
         if attack_type == AttackEnum.PHYSICAL \
             or attack_type == AttackEnum.SPECIAL:
                 if status_type == StatusEnum.SLEEP:
-                    roll(ACTIONS[ActionEnum.SLEEP_PROC], self, opponent)
+                    v1, v2 = roll(ACTIONS[ActionEnum.SLEEP_PROC], self, opponent)
+                    if (v1 < v2):
+                        print("Target is now asleep!")
                 elif status_type == StatusEnum.PARALYZE:
-                    roll(ACTIONS[ActionEnum.PARALYZE_PROC], self, opponent)
+                    v1, v2 = roll(ACTIONS[ActionEnum.PARALYZE_PROC], self, opponent)
+                    if (v1 < v2):
+                        print("Target is now paralyzed!")
                 elif status_type == StatusEnum.BURN:
-                    roll(ACTIONS[ActionEnum.BURN_PROC], self, opponent)
+                    v1, v2 = roll(ACTIONS[ActionEnum.BURN_PROC], self, opponent)
+                    if (v1 < v2):
+                        print("Target is now burned!")
                 elif status_type == StatusEnum.CONFUSION:
-                    roll(ACTIONS[ActionEnum.CONFUSION_PROC], self, opponent)
+                    v1, v2 = roll(ACTIONS[ActionEnum.CONFUSION_PROC], self, opponent)
+                    if (v1 < v2):
+                        print("Target is now confused!")
                 elif status_type == StatusEnum.FLINCH \
                     or status_type == StatusEnum.NONE:
                     pass
@@ -265,7 +283,7 @@ Luck: {self.luck}"""
         elif attack_type == AttackEnum.TARGET_MODIFICATION:
             pass
         elif attack_type == AttackEnum.SELF_HP:
-            v1, v2 = roll(Actions.HEAL_HP, self, opponent)
+            v1, v2 = roll(ACTIONS[ActionEnum.HEAL_HP], self, opponent)
             if (v1 > v2):
                 print(self.name + " failed to heal!")
                 return
@@ -276,7 +294,7 @@ Luck: {self.luck}"""
         elif attack_type == AttackEnum.SELF_STATUS:
             pass
         elif attack_type == AttackEnum.TARGET_STATUS:
-            v1, v2 = roll(Actions.ONLY_BURN_PROC, self, character)
+            v1, v2 = roll(ACTIONS[ActionEnum.ONLY_BURN_PROC], self, opponent)
             if (v1 > v2):
                 print(f"{self.name} failed to burn the target!")
                 return

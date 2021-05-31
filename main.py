@@ -65,6 +65,27 @@ Choose an attack type: """)
         if move_type == "normal":
             move_type = MoveEnum.NORMAL
             break
+        elif move_type == "fighting":
+            move_type = MoveEnum.FIGHTING
+            break
+        elif move_type == "flying":
+            move_type = MoveEnum.FLYING
+            break
+        elif move_type == "ground":
+            move_type = MoveEnum.GROUND
+            break
+        elif move_type == "rock":
+            move_type = MoveEnum.ROCK
+            break
+        elif move_type == "bug":
+            move_type = MoveEnum.BUG
+            break
+        elif move_type == "ghost":
+            move_type = MoveEnum.GHOST
+            break
+        elif move_type == "steel":
+            move_type = MoveEnum.STEEL
+            break
         elif move_type == "fire":
             move_type = MoveEnum.FIRE
             break
@@ -74,32 +95,23 @@ Choose an attack type: """)
         elif move_type == "grass":
             move_type = MoveEnum.GRASS
             break
+        elif move_type == "electric":
+            move_type = MoveEnum.ELECTRIC
+            break
         elif move_type == "psychic":
             move_type = MoveEnum.PSYCHIC
             break
-        elif move_type == "dark":
-            move_type = MoveEnum.DARK
-            break
-        elif move_type == "fighting":
-            move_type = MoveEnum.FIGHTING
+        elif move_type == "ice":
+            move_type = MoveEnum.ICE
             break
         elif move_type == "dragon":
             move_type = MoveEnum.DRAGON
             break
+        elif move_type == "dark":
+            move_type = MoveEnum.DARK
+            break
         elif move_type == "fairy":
             move_type = MoveEnum.FAIRY
-            break
-        elif move_type == "steel":
-            move_type = MoveEnum.STEEL
-            break
-        elif move_type == "flying":
-            move_type = MoveEnum.FLYING
-            break
-        elif move_type == "ground":
-            move_type = MoveEnum.GROUND
-            break
-        elif move_type == "electric":
-            move_type = MoveEnum.ELECTRIC
             break
 
     print("Rolling for power")
@@ -161,7 +173,8 @@ c4 = Character(
     0, 0, 0, 0, 0, # modifiers
     StatusEnum.NONE, 0) # status
 
-print(Character.create(POKEDATA["Charmander"], 1, 10))
+# c5 = Character.create(POKEDATA["Charmander"], 1, 10)
+# print(c5)
 # print(Character.create(POKEDATA["Charizard"], 3, 70))
 
 # c1.attack(c2, AttackEnum.SPECIAL, MoveEnum.FIRE, .5, StatusEnum.BURN)
